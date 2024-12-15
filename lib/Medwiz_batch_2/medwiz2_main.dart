@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:my_learning/Medwiz_batch_2/pages/chat_page.dart';
 
-const apiKey = "AlzaSyBdd3U0Vzph_VicJO5q9AfQfQmOHS_JgrA";
+const apiKey = "AIzaSyA_eFBTgeFTOkS-Ah8gVHz_VN9_2TRqvLM";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

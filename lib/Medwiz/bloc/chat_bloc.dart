@@ -27,7 +27,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ChatMessage(
         role: "user",
         parts: [
-          ChatPart(text: event.inputMessage),
+          ChatPart.text(event.inputMessage),
         ],
       ),
     );
@@ -36,13 +36,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     );
     log("Sending API request with messages: ${messages.map((m) => m.toJson()).toList()}");
     String generatedText = await ChatRepo.chatTextGenerationRepo(messages);
-    log("Generated text: $generatedText");
     if (generatedText.isNotEmpty) {
       messages.add(
         ChatMessage(
           role: "model",
           parts: [
-            ChatPart(text: generatedText),
+            ChatPart.text(generatedText),
           ],
         ),
       );
@@ -50,5 +49,4 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         ChatSuccessState(messages: messages),
       );
     }
-  }
-}
+  }}

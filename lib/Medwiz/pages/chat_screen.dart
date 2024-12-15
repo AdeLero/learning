@@ -92,7 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 borderRadius: BorderRadius.circular(16),
                                 color: message.role == "user" ? TheColors.wine : TheColors.mustard,
                               ),
-                              child: Text(message.parts.first.text),
+                              child: Text((message.parts.lastOrNull as TextChatPart).text),
                             );
                           }),
                     ),

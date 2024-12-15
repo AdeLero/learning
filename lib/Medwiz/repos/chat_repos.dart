@@ -23,11 +23,10 @@ class ChatRepo {
           }
       );
 
-      if (response.statusCode!>200 && response.statusCode!<300) {
+      if (response.statusCode!>=200 && response.statusCode!<300) {
         log("API Response: ${response.data}");
         ApiResponse apiResponse = ApiResponse.fromJson(response.data);
-        String generatedText = apiResponse.candidates.first.content.parts.first.text;
-        log("Generated Text: $generatedText");
+        String generatedText = apiResponse.candidates.first.response;
         return generatedText;
       }
       return '';
