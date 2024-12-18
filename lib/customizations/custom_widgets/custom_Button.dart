@@ -17,6 +17,7 @@ class CustomButton extends StatelessWidget {
   final bool isOutlined;
   final Color? outlineColor;
   final double? outlineThickness;
+  final double? borderRadius;
   const CustomButton({
     required this.onTap,
     this.verticalPadding,
@@ -33,6 +34,7 @@ class CustomButton extends StatelessWidget {
     this.isOutlined = false,
     this.outlineColor,
     this.outlineThickness,
+    this.borderRadius,
   });
 
   @override
@@ -44,14 +46,14 @@ class CustomButton extends StatelessWidget {
             vertical: verticalPadding ?? 10 , horizontal: horizontalPadding ?? 20),
         decoration: isOutlined ? BoxDecoration(
           color: buttonColor ?? TheColors.black,
-          borderRadius: BorderRadius.circular(100),
+          borderRadius: BorderRadius.circular(borderRadius ?? 100),
           border: Border.all(
             color: outlineColor ?? TheColors.white,
             width: outlineThickness ?? 1,
           ),
         ) : BoxDecoration(
           color: buttonColor ?? TheColors.black,
-          borderRadius: BorderRadius.circular(100),
+          borderRadius: BorderRadius.circular( borderRadius ?? 100),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
