@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:my_learning/pharmacy/pages/login_page.dart';
-import 'package:my_learning/pharmacy/routes/routes.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({super.key});

@@ -171,7 +171,7 @@ class _ChatPageState extends State<ChatPage> {
                                   fontStyle: FontStyle.italic,
                                   color: TheColors.grey,
                                 ),
-                                suffixIcon: Icons.cancel_outlined,
+                                suffixIcon: Icon(Icons.cancel_outlined),
                               ),
                             ),
                             XMargin(10),

@@ -11,5 +11,6 @@ class TheColors {
   static Color firmGreen = const Color(0xFF0E9913);
   static Color deepPurple =  const Color(0xFF262262);
   static Color red = const Color(0xFFF01B26);
+  static Color errorRed = const Color(0xFFF61D1D);
   static Color lightIndigo = const Color(0xFFdad6e4);
 }

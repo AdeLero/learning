@@ -85,7 +85,7 @@ class LoginPage extends StatelessWidget {
                       hasOutline: false,
                       prefixIconColor: TheColors.grey,
                       hintText: 'Password',
-                      suffixIcon: Icons.remove_red_eye_outlined,
+                      suffixIcon: Icon(Icons.remove_red_eye_outlined),
                       suffixIconColor: TheColors.grey,
                       fillColor: TheColors.lightIndigo,
                       borderRadius: 10,

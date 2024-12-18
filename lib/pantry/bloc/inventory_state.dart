@@ -12,3 +12,9 @@ class InventoryLoaded extends InventoryState {
 
   InventoryLoaded({required this.inventory});
 }
+
+class InventoryError extends InventoryState {
+  final String message;
+
+  InventoryError({required this.message});
+}

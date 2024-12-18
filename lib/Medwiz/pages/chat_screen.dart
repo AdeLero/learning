@@ -108,7 +108,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               controller: textEditingController,
                               prefixIcon: Icons.attach_file_rounded,
                               prefixIconColor: TheColors.grey,
-                              suffixIcon: Icons.cancel_outlined,
+                              suffixIcon: Icon(Icons.cancel_outlined),
                               suffixIconColor: TheColors.black,
                               hintText: 'Ask Medwiz Something...',
                               hintTextStyle: TextStyle(

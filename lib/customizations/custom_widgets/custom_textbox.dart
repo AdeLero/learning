@@ -14,9 +14,11 @@ class CustomTextbox extends StatelessWidget {
   final IconData? prefixIcon;
   final Color? prefixIconColor;
   final double? prefixIconSize;
-  final IconData? suffixIcon;
+  final Widget? suffixIcon;
   final Color? suffixIconColor;
   final TextEditingController? controller;
+  final String? label;
+  final FloatingLabelBehavior? floatingLabelBehavior;
   const CustomTextbox({
     this.hasOutline = true,
     this.expands = false,
@@ -33,6 +35,8 @@ class CustomTextbox extends StatelessWidget {
     this.suffixIcon,
     this.suffixIconColor,
     this.controller,
+    this.label,
+    this.floatingLabelBehavior,
   });
 
   @override
@@ -42,6 +46,8 @@ class CustomTextbox extends StatelessWidget {
       maxLength: maxLength,
       controller: controller,
       decoration: InputDecoration(
+        labelText: label,
+        floatingLabelBehavior: floatingLabelBehavior,
         hintText: hintText,
         hintStyle: hintTextStyle ??
             TextStyle(
@@ -52,7 +58,7 @@ class CustomTextbox extends StatelessWidget {
           size: prefixIconSize,
         ),
         prefixIconColor: prefixIconColor,
-        suffixIcon: Icon(suffixIcon),
+        suffixIcon: suffixIcon,
         suffixIconColor: suffixIconColor,
         filled: isFilled,
         fillColor: fillColor ?? TheColors.white,

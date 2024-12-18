@@ -6,8 +6,8 @@ sealed class InventoryEvent {}
 class AddIngredientToInventory extends InventoryEvent {
   final String name;
   final String unitOfMeasurement;
-  final double quantity;
-  final double? criticalQty;
+  final String quantity;
+  final String criticalQty;
 
   AddIngredientToInventory(
       {required this.name,

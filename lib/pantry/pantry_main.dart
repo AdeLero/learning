@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:my_learning/pantry/screens/add_ingredient.dart';
+import 'package:my_learning/pantry/bloc/inventory_bloc.dart';
+import 'package:my_learning/pantry/customization/theme_data.dart';
+import 'package:my_learning/pantry/screens/inventory_screen.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
@@ -8,7 +12,10 @@ void main() async {
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getTemporaryDirectory(),
   );
-  runApp(const PantryApp());
+  runApp(BlocProvider(
+    create: (_) => InventoryBloc(),
+    child: const PantryApp(),
+  ));
 }
 
 class PantryApp extends StatelessWidget {
@@ -16,9 +23,18 @@ class PantryApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Pantry App",
-      home: AddIngredient(),
+    return ScreenUtilInit(
+      designSize: const Size(360,800),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (_, child) {
+        return MaterialApp(
+          title: "Pantry App",
+          home: InventoryScreen(),
+          theme: pantryTheme,
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
 }
