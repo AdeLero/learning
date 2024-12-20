@@ -21,6 +21,7 @@ class InventoryBloc extends HydratedBloc<InventoryEvent, InventoryState> {
 
   void addIngredientToInventory(
       AddIngredientToInventory event, Emitter<InventoryState> emit) {
+    print("state before: $state");
     if (event.name.isNotEmpty &&
         event.quantity.isNotEmpty &&
         event.unitOfMeasurement.isNotEmpty &&
@@ -34,6 +35,7 @@ class InventoryBloc extends HydratedBloc<InventoryEvent, InventoryState> {
         criticalQty: ingredientCriticalQty,
       ));
       emit(InventoryLoaded(inventory: inventory));
+      print("state after: $state");
     } else {
       emit(InventoryError(message: "Please Fill All Fields"));
     }

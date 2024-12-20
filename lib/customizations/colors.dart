@@ -9,8 +9,11 @@ class TheColors {
   static Color grey = const Color(0xFFb1b1b1);
   static Color deepGreen = const Color(0xFF187B04);
   static Color firmGreen = const Color(0xFF0E9913);
+  static Color tealGreen = const Color(0xFF92B177);
+  static Color lightGreen = const Color(0xFF23DD01);
   static Color deepPurple =  const Color(0xFF262262);
   static Color red = const Color(0xFFF01B26);
   static Color errorRed = const Color(0xFFF61D1D);
+  static Color deepRed = const Color(0xFF680101);
   static Color lightIndigo = const Color(0xFFdad6e4);
 }

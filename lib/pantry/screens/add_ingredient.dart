@@ -22,6 +22,7 @@ class AddIngredient extends StatelessWidget {
       create: (context) => InventoryBloc(),
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: pantryTheme.scaffoldBackgroundColor,
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -133,6 +134,7 @@ class AddIngredient extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   label: "Create Ingredient",
+                  labelColor: pantryTheme.scaffoldBackgroundColor,
                 ),
                 BlocBuilder<InventoryBloc, InventoryState>(
                   bloc: inventoryBloc,
@@ -140,17 +142,18 @@ class AddIngredient extends StatelessWidget {
                     String message = "";
                     if (state is InventoryError) {
                       message = state.message;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error,
+                            color: pantryTheme.indicatorColor,
+                          ),
+                          Text(message),
+                        ],
+                      );
                     }
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error,
-                          color: pantryTheme.indicatorColor,
-                        ),
-                        Text(message),
-                      ],
-                    );
+                    return SizedBox();
                   },
                 )
               ],

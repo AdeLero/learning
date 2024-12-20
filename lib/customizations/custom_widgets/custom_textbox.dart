@@ -19,6 +19,7 @@ class CustomTextbox extends StatelessWidget {
   final TextEditingController? controller;
   final String? label;
   final FloatingLabelBehavior? floatingLabelBehavior;
+  final bool hasPrefixIcon;
   const CustomTextbox({
     this.hasOutline = true,
     this.expands = false,
@@ -37,6 +38,7 @@ class CustomTextbox extends StatelessWidget {
     this.controller,
     this.label,
     this.floatingLabelBehavior,
+    this.hasPrefixIcon = false,
   });
 
   @override
@@ -53,10 +55,10 @@ class CustomTextbox extends StatelessWidget {
             TextStyle(
               color: TheColors.grey,
             ),
-        prefixIcon: Icon(
+        prefixIcon: hasPrefixIcon ? Icon(
           prefixIcon,
           size: prefixIconSize,
-        ),
+        ) : null,
         prefixIconColor: prefixIconColor,
         suffixIcon: suffixIcon,
         suffixIconColor: suffixIconColor,

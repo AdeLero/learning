@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:my_learning/pantry/bloc/inventory_bloc.dart';
 import 'package:my_learning/pantry/customization/theme_data.dart';
 import 'package:my_learning/pantry/screens/inventory_screen.dart';
+import 'package:my_learning/pantry/screens/pantry_splash_screen.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getTemporaryDirectory(),
   );
@@ -30,7 +33,7 @@ class PantryApp extends StatelessWidget {
       builder: (_, child) {
         return MaterialApp(
           title: "Pantry App",
-          home: InventoryScreen(),
+          home: PantrySplashScreen(),
           theme: pantryTheme,
           debugShowCheckedModeBanner: false,
         );
