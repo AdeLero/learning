@@ -44,6 +44,7 @@ class _EditAccountDetailsState extends State<EditAccountDetails> {
   }
   @override
   Widget build(BuildContext context) {
+    final authBloc = BlocProvider.of<AuthBloc>(context);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: () {
@@ -87,7 +88,7 @@ class _EditAccountDetailsState extends State<EditAccountDetails> {
             onTap: () {
               final userName = userNameController.text;
               final image = profilePicture?.path;
-              BlocProvider.of<AuthBloc>(context).add(UpdateUserCredentials(userName: userName, image: image));
+              authBloc.add(UpdateUserCredentials(userName: userName, image: image));
               Navigator.pop(context);
             },
             buttonText: "Update",

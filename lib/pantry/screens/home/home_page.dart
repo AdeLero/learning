@@ -52,7 +52,7 @@ class HomePage extends StatelessWidget {
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 16.h),
                     child: Text(
-                      userName!,
+                      userName ?? "Username",
                       style: TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.w800,

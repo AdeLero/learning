@@ -16,6 +16,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignedUp>(authSignedUp);
     on<AuthSignedOut>(authSignedOut);
     on<UpdateUserCredentials>(updateUserCredentials);
+    on<AuthWithGoogle>(authWithGoogle);
+    on<ForgotPassword>(forgotPassword);
   }
   FutureOr<void> authCheckRequested (AuthCheckRequested event, Emitter<AuthState> emit) async {
     final user = authRepository.user;
@@ -25,13 +27,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
   FutureOr<void> authSignedIn(AuthSignedIn event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    print("State: $state");
+    print("state: $state");
     try {
       await authRepository.signInWithEmailAndPassword(event.email, event.password);
       emit(Authenticated(await authRepository.currentUser!));
-      print("User: ${authRepository.currentUser}");
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError("Incorrect Username or Password"));
+      print("state: $state");
     }
   }
   FutureOr<void>authSignedUp(AuthSignedUp event, Emitter<AuthState> emit) async {
@@ -54,5 +56,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       photoURL: event.image,
     );
     emit(Authenticated(await authRepository.currentUser!));
+  }
+
+  FutureOr<void> authWithGoogle(AuthWithGoogle event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    try {
+      final user = await authRepository.signInWithGoogle();
+      if (user != null) {
+        emit(Authenticated(user));
+      } else {
+        emit(AuthError("Google Sign In was cancelled"));
+      }
+    } catch (e) {
+      emit(AuthError("Error Signing In With Google: $e"));
+    }
+  }
+
+  FutureOr<void>forgotPassword(ForgotPassword event, Emitter<AuthState> emit) async {
+    await authRepository.forgotPassword(event.email);
+    emit(Unauthenticated());
   }
 }

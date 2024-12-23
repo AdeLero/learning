@@ -34,4 +34,12 @@ class UpdateUserCredentials extends AuthEvent {
   UpdateUserCredentials({required this.userName, required this.image});
 }
 
+class AuthWithGoogle extends AuthEvent {}
+
+class ForgotPassword extends AuthEvent {
+  final String email;
+
+  ForgotPassword({required this.email});
+}
+
 

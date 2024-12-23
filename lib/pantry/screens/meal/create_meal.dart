@@ -9,6 +9,7 @@ import 'package:my_learning/customizations/custom_widgets/margins.dart';
 import 'package:my_learning/customizations/custom_widgets/pantry_button.dart';
 import 'package:my_learning/pantry/blocs/bloc/inventory_bloc.dart';
 import 'package:my_learning/pantry/blocs/meal_bloc/meal_bloc.dart';
+import 'package:my_learning/pantry/custom_widgets/error_row.dart';
 import 'package:my_learning/pantry/custom_widgets/image_selector.dart';
 import 'package:my_learning/pantry/custom_widgets/inventory_display_widget.dart';
 import 'package:my_learning/pantry/customization/theme_data.dart';
@@ -340,7 +341,7 @@ class CreateMeal extends StatelessWidget {
                   String message = "";
                   if (state is MealAddingError) {
                     message = state.message;
-                    return showError ? errorRow(message) : SizedBox();
+                    return showError ? ErrorRow(message: message) : SizedBox();
                   }
                   return const SizedBox();
                 },
@@ -353,15 +354,4 @@ class CreateMeal extends StatelessWidget {
   }
 }
 
-Widget errorRow(String message) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Icon(
-        Icons.error,
-        color: pantryTheme.indicatorColor,
-      ),
-      Text(message),
-    ],
-  );
-}
+
