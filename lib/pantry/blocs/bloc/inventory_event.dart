@@ -41,3 +41,5 @@ class AddMealToInventory extends InventoryEvent {
     this.timeToCook,
   });
 }
+
+

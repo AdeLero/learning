@@ -18,3 +18,4 @@ class InventoryError extends InventoryState {
 
   InventoryError({required this.message});
 }
+

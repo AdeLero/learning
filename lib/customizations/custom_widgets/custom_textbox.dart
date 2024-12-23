@@ -20,6 +20,7 @@ class CustomTextbox extends StatelessWidget {
   final String? label;
   final FloatingLabelBehavior? floatingLabelBehavior;
   final bool hasPrefixIcon;
+  final bool obscureInput;
   const CustomTextbox({
     this.hasOutline = true,
     this.expands = false,
@@ -39,6 +40,7 @@ class CustomTextbox extends StatelessWidget {
     this.label,
     this.floatingLabelBehavior,
     this.hasPrefixIcon = false,
+    this.obscureInput = false,
   });
 
   @override
@@ -47,6 +49,7 @@ class CustomTextbox extends StatelessWidget {
       expands: expands,
       maxLength: maxLength,
       controller: controller,
+      obscureText: obscureInput,
       decoration: InputDecoration(
         labelText: label,
         floatingLabelBehavior: floatingLabelBehavior,

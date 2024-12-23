@@ -11,8 +11,6 @@ part 'inventory_state.dart';
 class InventoryBloc extends HydratedBloc<InventoryEvent, InventoryState> {
   InventoryBloc() : super(InventoryInitial()) {
     on<AddIngredientToInventory>(addIngredientToInventory);
-    on<AddMealIngredientToList>(addMealIngredientToList);
-    on<AddMealToInventory>(addMealToInventory);
   }
 
   List<Ingredient> inventory = [];
@@ -21,7 +19,6 @@ class InventoryBloc extends HydratedBloc<InventoryEvent, InventoryState> {
 
   void addIngredientToInventory(
       AddIngredientToInventory event, Emitter<InventoryState> emit) {
-    print("state before: $state");
     if (event.name.isNotEmpty &&
         event.quantity.isNotEmpty &&
         event.unitOfMeasurement.isNotEmpty &&
@@ -35,30 +32,13 @@ class InventoryBloc extends HydratedBloc<InventoryEvent, InventoryState> {
         criticalQty: ingredientCriticalQty,
       ));
       emit(InventoryLoaded(inventory: inventory));
-      print("state after: $state");
     } else {
       emit(InventoryError(message: "Please Fill All Fields"));
     }
   }
 
-  void addMealIngredientToList(
-      AddMealIngredientToList event, Emitter<InventoryState> emit) {
-    mealIngredients.add(MealIngredient(
-      ingredient: event.ingredient,
-      quantity: event.quantity,
-    ));
-  }
 
-  void addMealToInventory(
-      AddMealToInventory event, Emitter<InventoryState> emit) {
-    meals.add(Meal(
-      name: event.mealName,
-      mealIngredients: event.mealIngredients,
-      image: event.image,
-      timeToCook: event.timeToCook,
-      howToCook: event.howToCook,
-    ));
-  }
+
 
   @override
   InventoryState? fromJson(Map<String, dynamic> json) {

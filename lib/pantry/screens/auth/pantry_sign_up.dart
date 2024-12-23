@@ -1,18 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_learning/customizations/custom_widgets/custom_textbox.dart';
 import 'package:my_learning/customizations/custom_widgets/margins.dart';
 import 'package:my_learning/customizations/custom_widgets/pantry_button.dart';
+import 'package:my_learning/pantry/blocs/auth_bloc/auth_bloc.dart';
 import 'package:my_learning/pantry/customization/theme_data.dart';
 import 'package:my_learning/pantry/screens/home/landing_page.dart';
-import 'package:my_learning/pantry/screens/inventory_screen.dart';
 
 class PantrySignUp extends StatelessWidget {
   const PantrySignUp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController userNameController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+    TextEditingController password2Controller = TextEditingController();
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -26,6 +32,7 @@ class PantrySignUp extends StatelessWidget {
                 label: "Username",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 hintText: "Username",
+                controller: userNameController,
                 borderRadius: 8.r,
               ),
               YMargin(30.h),
@@ -33,6 +40,7 @@ class PantrySignUp extends StatelessWidget {
                 label: "Email",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 hintText: "Email",
+                controller: emailController,
                 borderRadius: 8.r,
               ),
               YMargin(30.h),
@@ -40,6 +48,7 @@ class PantrySignUp extends StatelessWidget {
                 label: "Password",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 hintText: "Password",
+                controller: passwordController,
                 borderRadius: 8.r,
                 suffixIcon: Icon(CupertinoIcons.eye_slash),
               ),
@@ -51,6 +60,7 @@ class PantrySignUp extends StatelessWidget {
                 label: "Re-enter Password",
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 hintText: "Re-enter Password",
+                controller: password2Controller,
                 borderRadius: 8.r,
                 suffixIcon: Icon(CupertinoIcons.eye_slash),
               ),
@@ -60,6 +70,13 @@ class PantrySignUp extends StatelessWidget {
               YMargin(30.h),
               PantryButton(
                 onPressed: () {
+                  if (passwordController.text == password2Controller.text) {
+                    final email = emailController.text;
+                    final password = passwordController.text;
+                    BlocProvider.of<AuthBloc>(context).add(AuthSignedUp(email: email, password: password));
+                  } else {
+                    throw Exception("Passwords do not match");
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(

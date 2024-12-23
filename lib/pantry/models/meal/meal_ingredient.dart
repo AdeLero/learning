@@ -13,6 +13,14 @@ class MealIngredient {
     required this.quantity,
   });
 
-  factory MealIngredient.fromJson (Map<String, dynamic> json) => _$MealIngredientFromJson(json);
-  Map<String,dynamic> toJson() => _$MealIngredientToJson(this);
+  MealIngredient copyWith({Ingredient? ingredient, double? quantity}) {
+    return MealIngredient(
+      ingredient: ingredient ?? this.ingredient,
+      quantity: quantity ?? this.quantity,
+    );
+  }
+
+  factory MealIngredient.fromJson(Map<String, dynamic> json) =>
+      _$MealIngredientFromJson(json);
+  Map<String, dynamic> toJson() => _$MealIngredientToJson(this);
 }

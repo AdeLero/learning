@@ -4,12 +4,13 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_learning/customizations/custom_widgets/my_bottom_nav_bar.dart';
 import 'package:my_learning/pantry/customization/theme_data.dart';
-import 'package:my_learning/pantry/screens/add_ingredient.dart';
+import 'package:my_learning/pantry/screens/ingredient/add_ingredient.dart';
 import 'package:my_learning/pantry/screens/home/account_page.dart';
 import 'package:my_learning/pantry/screens/home/home_page.dart';
 import 'package:my_learning/pantry/screens/home/lists_page.dart';
 import 'package:my_learning/pantry/screens/home/order_page.dart';
 import 'package:my_learning/pantry/screens/home/shopping_page.dart';
+import 'package:my_learning/pantry/screens/meal/create_meal.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -24,11 +25,11 @@ class _LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: <Widget>[
-        ListsPage(),
-        ShoppingPage(),
-        HomePage(),
-        OrderPage(),
-        AccountPage()
+        const ListsPage(),
+        const ShoppingPage(),
+        const HomePage(),
+        const OrderPage(),
+        const AccountPage()
       ][_currentPageIndex],
       floatingActionButton: SpeedDial(
         icon: Icons.add,
@@ -40,14 +41,21 @@ class _LandingPageState extends State<LandingPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AddIngredient(),
+                  builder: (context) => const AddIngredient(),
                 ),
               );
             },
           ),
           SpeedDialChild(
             label: 'Meal',
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CreateMeal(),
+                ),
+              );
+            },
           ),
           SpeedDialChild(
             label: 'Meal Schedule',

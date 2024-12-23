@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_learning/customizations/colors.dart';
 import 'package:my_learning/pantry/customization/theme_data.dart';
-import 'package:my_learning/pantry/screens/add_ingredient.dart';
+import 'package:my_learning/pantry/screens/ingredient/add_ingredient.dart';
 import 'package:my_learning/pantry/screens/inventory_screen.dart';
+import 'package:my_learning/pantry/screens/meal/meal_inventory_screen.dart';
 
 class ListsPage extends StatelessWidget {
   const ListsPage({super.key});
@@ -22,13 +23,13 @@ class ListsPage extends StatelessWidget {
                   child: TabBar(
                     labelColor: pantryTheme.primaryColor,
                     labelStyle: TextStyle(
-                      fontSize: 24,
+                      fontSize: 24.sp,
                       fontWeight: FontWeight.w900,
                     ),
                     unselectedLabelColor: TheColors.grey,
                     indicatorColor: pantryTheme.primaryColor,
                     indicatorSize: TabBarIndicatorSize.tab,
-                    tabs: [
+                    tabs: const  [
                       Tab(text: 'Inventory',),
                       Tab(text: 'Meals',),
                     ],
@@ -37,10 +38,10 @@ class ListsPage extends StatelessWidget {
                 SizedBox(
                   width: size.width,
                   height: size.height * 0.80,
-                  child: TabBarView(
+                  child: const TabBarView(
                     children: [
                       InventoryScreen(),
-                      AddIngredient(),
+                      MealInventoryScreen(),
                     ],
                   ),
                 )
