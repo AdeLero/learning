@@ -22,6 +22,7 @@ class InventoryDisplayWidget extends StatelessWidget {
     bool isAllMeals = inventory.every((item) => item is Meal);
     return Container(
       color: TheColors.white,
+      padding: EdgeInsets.all(1.w),
       child: Column(
         children: [
           if (isAllIngredients)
@@ -69,7 +70,7 @@ class InventoryDisplayWidget extends StatelessWidget {
                       SlidableAction(
                         onPressed: (context) => leftOnPressed?.call(index),
                         backgroundColor: TheColors.deepGreen,
-                        foregroundColor: TheColors.lightGreen,
+                        foregroundColor: Colors.white,
                         icon: Icons.edit_outlined,
                       )
                     ],
@@ -82,7 +83,7 @@ class InventoryDisplayWidget extends StatelessWidget {
                         onPressed: (context) => rightOnPressed?.call(index),
                         icon: Icons.delete_rounded,
                         backgroundColor: TheColors.deepRed,
-                        foregroundColor: pantryTheme.indicatorColor,
+                        foregroundColor: TheColors.errorRed,
                       )
                     ],
                   ),
@@ -182,6 +183,8 @@ class InventoryDisplayWidget extends StatelessWidget {
                           height: 150.h,
                           width: double.maxFinite,
                           fit: BoxFit.cover,
+                          colorBlendMode: BlendMode.darken,
+                          color: TheColors.black.withOpacity(0.05),
                         )
                             : Container(
                           height: 150.h,
@@ -200,6 +203,13 @@ class InventoryDisplayWidget extends StatelessWidget {
                                 fontSize: 40.sp,
                                 fontWeight: FontWeight.w900,
                                 color: TheColors.white,
+                                shadows: [
+                                  Shadow(
+                                    offset: const Offset(0, 4),
+                                    blurRadius: 4.r,
+                                    color: TheColors.black.withOpacity(0.25),
+                                  )
+                                ]
                               ),
                             ),
                           ),

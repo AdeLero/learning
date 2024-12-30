@@ -5,11 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:my_learning/pantry/blocs/auth_bloc/auth_bloc.dart';
-import 'package:my_learning/pantry/blocs/bloc/inventory_bloc.dart';
+import 'package:my_learning/pantry/blocs/ingredient_bloc/inventory_bloc.dart';
 import 'package:my_learning/pantry/blocs/meal_bloc/meal_bloc.dart';
+import 'package:my_learning/pantry/blocs/schedule_bloc/schedule_bloc.dart';
 import 'package:my_learning/pantry/customization/theme_data.dart';
 import 'package:my_learning/pantry/repos/auth_repo.dart';
-import 'package:my_learning/pantry/screens/pantry_splash_screen.dart';
+import 'package:my_learning/pantry/routes/screens.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
@@ -30,7 +31,10 @@ void main() async {
       ),
       BlocProvider<MealBloc>(
         create: (_) => MealBloc(),
-      )
+      ),
+      BlocProvider<ScheduleBloc>(
+        create: (_) => ScheduleBloc(),
+      ),
     ],
     child: const PantryApp(),
   ));
@@ -48,9 +52,16 @@ class PantryApp extends StatelessWidget {
       builder: (_, child) {
         return MaterialApp(
           title: "Pantry App",
-          home: PantrySplashScreen(),
           theme: pantryTheme,
           debugShowCheckedModeBanner: false,
+          routes: appRoutes,
+          onGenerateRoute: (settings) {
+            final finalRoute = screens.firstWhere(
+                (route) => route.name == settings.name,
+              orElse: () => throw Exception("Route not found: ${settings.name}"),
+            );
+            return MaterialPageRoute(builder: (context) => finalRoute.page!(settings.arguments),);
+          },
         );
       },
     );

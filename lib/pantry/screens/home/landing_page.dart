@@ -4,6 +4,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_learning/customizations/custom_widgets/my_bottom_nav_bar.dart';
 import 'package:my_learning/pantry/customization/theme_data.dart';
+import 'package:my_learning/pantry/routes/routes.dart';
 import 'package:my_learning/pantry/screens/ingredient/add_ingredient.dart';
 import 'package:my_learning/pantry/screens/home/account_page.dart';
 import 'package:my_learning/pantry/screens/home/home_page.dart';
@@ -58,8 +59,10 @@ class _LandingPageState extends State<LandingPage> {
             },
           ),
           SpeedDialChild(
-            label: 'Meal Schedule',
-            onTap: () {},
+            label: 'Schedule Meals',
+            onTap: () {
+              Navigator.pushNamed(context, Routes.scheduleMeal);
+            },
           ),
         ],
       ),

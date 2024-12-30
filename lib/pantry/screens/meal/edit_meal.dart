@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:my_learning/customizations/colors.dart';
-import 'package:my_learning/customizations/custom_widgets/custom_Button.dart';
 import 'package:my_learning/customizations/custom_widgets/custom_textbox.dart';
 import 'package:my_learning/customizations/custom_widgets/margins.dart';
 import 'package:my_learning/customizations/custom_widgets/pantry_button.dart';
@@ -17,22 +16,48 @@ import 'package:my_learning/pantry/custom_widgets/inventory_display_widget.dart'
 import 'package:my_learning/pantry/customization/theme_data.dart';
 import 'package:my_learning/pantry/models/ingredient/ingredient_model.dart';
 import 'package:my_learning/pantry/models/meal/meal_ingredient.dart';
+import 'package:my_learning/pantry/models/meal/meal_model.dart';
 
-class CreateMeal extends StatefulWidget {
-  const CreateMeal({super.key});
+class EditMeal extends StatefulWidget {
+  final Meal meal;
+  const EditMeal({super.key, required this.meal});
 
   @override
-  State<CreateMeal> createState() => _CreateMealState();
+  State<EditMeal> createState() => _EditMealState();
 }
 
-class _CreateMealState extends State<CreateMeal> {
-  bool isEdit = false;
+class _EditMealState extends State<EditMeal> {
+  late TextEditingController name;
+  late TextEditingController howToCook;
+  late TextEditingController timeToCook;
+
+  @override
+  void initState() {
+    super.initState();
+    name = TextEditingController(text: widget.meal.name);
+    howToCook = TextEditingController(text: widget.meal.howToCook);
+    timeToCook = TextEditingController(text: widget.meal.timeToCook);
+    context
+        .read<MealBloc>()
+        .add(GetMealImage(mealImagePath: widget.meal.image!));
+    context
+        .read<MealBloc>()
+        .add(GetMealIngredients(mealIngredients: widget.meal.mealIngredients));
+  }
+
+  @override
+  void dispose() {
+    name.dispose();
+    howToCook.dispose();
+    timeToCook.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final mealBloc = BlocProvider.of<MealBloc>(context);
     final inventoryBloc = BlocProvider.of<InventoryBloc>(context);
     final inventoryState = inventoryBloc.state;
-
     List<Ingredient> inventory = [];
     if (inventoryState is InventoryLoaded) {
       inventory = inventoryState.inventory;
@@ -44,109 +69,79 @@ class _CreateMealState extends State<CreateMeal> {
           Navigator.pop(context);
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return MyAlertDialog(
-                        title: "Close Page",
-                        buttonText: "Leave Page",
-                        content: const Text(
-                            "Leaving this page will delete all your progress"),
-                        onSubmit: () {
-                          Navigator.canPop(context);
-                          context.read<MealBloc>().add(NavigateMealBack());
-                        });
-                  });
-            },
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: pantryTheme.primaryColor,
+      child: BlocBuilder<MealBloc, MealState>(
+        builder: (context, state) {
+          File? mealImage = (state is MealTemplate &&
+                  state.image != null &&
+                  state.image!.isNotEmpty)
+              ? File(state.image!)
+              : null;
+          final selectedIngredients = state is MealTemplate
+              ? state.mealIngredients ?? <MealIngredient>[]
+              : <MealIngredient>[];
+          return Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return MyAlertDialog(
+                            title: "Close Page",
+                            buttonText: "Leave Page",
+                            content: const Text(
+                                "Leaving this page will delete all your progress"),
+                            onSubmit: () {
+                              Navigator.canPop(context);
+                              context.read<MealBloc>().add(NavigateMealBack());
+                            });
+                      });
+                },
+                icon: Icon(
+                  Icons.arrow_back_rounded,
+                  color: pantryTheme.primaryColor,
+                ),
+              ),
+              elevation: 1,
+              backgroundColor: pantryTheme.scaffoldBackgroundColor,
             ),
-          ),
-          elevation: 1,
-          backgroundColor: pantryTheme.scaffoldBackgroundColor,
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
+            body: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Create A",
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: 25.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    "Meal",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 50.sp,
-                    ),
-                  )
-                ],
-              ),
-              YMargin(40.h),
-              BlocBuilder<MealBloc, MealState>(
-                builder: (context, state) {
-                  final name = TextEditingController(
-                    text: state is MealTemplate ? state.name : "",
-                  );
-                  File? mealImage = (state is MealTemplate &&
-                          state.image != null &&
-                          state.image!.isNotEmpty)
-                      ? File(state.image!)
-                      : null;
-                  final selectedIngredients = state is MealTemplate
-                      ? state.mealIngredients ?? <MealIngredient>[]
-                      : <MealIngredient>[];
-                  final howToCook = TextEditingController(
-                    text: state is MealTemplate ? state.howToCook : "",
-                  );
-                  final timeToCook = TextEditingController(
-                    text: state is MealTemplate ? state.timeToCook : "",
-                  );
-                  return Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextbox(
-                              label: "Meal Name",
-                              isReadOnly: !isEdit,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              hintText: "Input",
-                              controller: name,
-                              suffixIcon: const Icon(Icons.cancel_outlined),
-                              borderRadius: 4.r,
-                            ),
-                          ),
-                          XMargin(8.w),
-                          CustomButton(
-                            onTap: () {
-                              setState(() {
-                                isEdit = !isEdit;
-                                if (!isEdit) {
-                                  mealBloc.add(SetMealName(name: name.text));
-                                }
-                              });
-                            },
-                            prefixIcon: isEdit ? Icons.check : Icons.edit,
-                            buttonColor: pantryTheme.scaffoldBackgroundColor,
-                            prefixIconColor: pantryTheme.primaryColor,
-                          )
-                        ],
+                      Text(
+                        "Edit",
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 25.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        "Meal",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 50.sp,
+                        ),
+                      )
+                    ],
+                  ),
+                  YMargin(40.h),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextbox(
+                        label: "Meal Name",
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        hintText: "Input",
+                        controller: name,
+                        isReadOnly: true,
+                        suffixIcon: const Icon(Icons.cancel_outlined),
+                        borderRadius: 4.r,
                       ),
                       YMargin(24.h),
                       Text(
@@ -215,20 +210,21 @@ class _CreateMealState extends State<CreateMeal> {
                           ),
                           IconButton(
                             onPressed: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) {
-                                    return InventoryDisplayWidget(
-                                      inventory: inventory,
-                                      onTap: (index) {
-                                        final ingredient = inventory[index];
-                                        mealBloc.add(AddMealIngredient(
-                                            ingredient: ingredient,
-                                            quantity: 1));
-                                        Navigator.pop(context);
-                                      },
-                                    );
-                                  });
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          InventoryDisplayWidget(
+                                            inventory: inventory,
+                                            onTap: (index) {
+                                              final ingredient =
+                                                  inventory[index];
+                                              mealBloc.add(AddMealIngredient(
+                                                  ingredient: ingredient,
+                                                  quantity: 1));
+                                              Navigator.pop(context);
+                                            },
+                                          )));
                             },
                             icon: Icon(
                               Icons.add,
@@ -335,7 +331,7 @@ class _CreateMealState extends State<CreateMeal> {
                         hintText: "Input",
                         controller: howToCook,
                         borderRadius: 4.r,
-                        suffixIcon: Icon(Icons.cancel_outlined),
+                        suffixIcon: const Icon(Icons.cancel_outlined),
                       ),
                       YMargin(24.h),
                       CustomTextbox(
@@ -344,29 +340,28 @@ class _CreateMealState extends State<CreateMeal> {
                         hintText: "Write only the number of minutes",
                         controller: timeToCook,
                         borderRadius: 4.r,
-                        suffixIcon: Icon(Icons.cancel_outlined),
+                        suffixIcon: const Icon(Icons.cancel_outlined),
                       ),
                       YMargin(24.h),
                       PantryButton(
                         onPressed: () {
-                          final String? mealName = (state as MealTemplate).name;
-                          final String image = (state).image!;
+                          final String image = (state as MealTemplate).image!;
                           final List<MealIngredient>? mealIng =
-                              (state).mealIngredients;
+                              (state as MealTemplate).mealIngredients;
                           final String howTo = howToCook.text;
                           final String timeTo = timeToCook.text;
                           mealBloc.add(
-                            AddMeal(
-                              name: mealName!,
-                              image: image,
-                              mealIngredients: mealIng!,
-                              howToCook: howTo,
-                              timeToCook: timeTo,
-                            ),
+                            EditMealEvent(
+                                name: widget.meal.name,
+                                mealIngredients: mealIng!,
+                                image: image,
+                                howToCook: howTo,
+                                timeToCook: timeTo),
                           );
 
                           howToCook.clear();
                           timeToCook.clear();
+                          name.clear();
                         },
                         label: "Create Meal",
                         labelColor: pantryTheme.scaffoldBackgroundColor,
@@ -374,12 +369,12 @@ class _CreateMealState extends State<CreateMeal> {
                       if (state is MealAddingError)
                         ErrorRow(message: state.message),
                     ],
-                  );
-                },
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

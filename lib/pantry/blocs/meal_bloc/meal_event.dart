@@ -3,11 +3,17 @@ part of 'meal_bloc.dart';
 @immutable
 sealed class MealEvent {}
 
-class GetMealImage extends MealEvent {
-  final String mealImagePath;
+class SetMealName extends MealEvent {
   final String name;
 
-  GetMealImage({required this.mealImagePath, required this.name});
+  SetMealName({required this.name});
+}
+
+class GetMealImage extends MealEvent {
+  final String mealImagePath;
+
+
+  GetMealImage({required this.mealImagePath});
 }
 
 class AddMealIngredient extends MealEvent {
@@ -15,6 +21,12 @@ class AddMealIngredient extends MealEvent {
   final double quantity;
 
   AddMealIngredient({required this.ingredient, required this.quantity});
+}
+
+class DeleteMealIngredient extends MealEvent {
+  final String name;
+
+  DeleteMealIngredient({required this.name});
 }
 
 class AddMeal extends MealEvent {
@@ -33,6 +45,34 @@ class AddMeal extends MealEvent {
   });
 }
 
+class EditMealEvent extends MealEvent {
+  final String name;
+  final List<MealIngredient> mealIngredients;
+  final String? image;
+  final String? howToCook;
+  final String? timeToCook;
+
+  EditMealEvent({
+    required this.name,
+    required this.mealIngredients,
+    required this.image,
+    required this.howToCook,
+    required this.timeToCook,
+  });
+}
+
+class DeleteMeal extends MealEvent {
+  final String name;
+
+  DeleteMeal({required this.name});
+}
+
+class GetMealIngredients extends MealEvent {
+  final List<MealIngredient> mealIngredients;
+
+  GetMealIngredients({required this.mealIngredients});
+}
+
 class IncrementIngredientQuantity extends MealEvent {
   final MealIngredient ingredient;
 
@@ -44,3 +84,7 @@ class DecrementIngredientQuantity extends MealEvent {
 
   DecrementIngredientQuantity({required this.ingredient});
 }
+
+class NavigateMealBack extends MealEvent {}
+
+class DeleteMealImage extends MealEvent {}

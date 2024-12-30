@@ -17,6 +17,20 @@ class Ingredient {
       required this.unitOfMeasurement,
       this.criticalQty});
 
+  Ingredient copyWith({
+    String? name,
+    double? quantity,
+    String? unitOfMeasurement,
+    double? criticalQty,
+}) {
+    return Ingredient(
+      name: name ?? this.name,
+      quantity: quantity ?? this.quantity,
+      unitOfMeasurement: unitOfMeasurement ?? this.unitOfMeasurement,
+      criticalQty: criticalQty ?? this.criticalQty,
+    );
+  }
+
   factory Ingredient.fromJson(Map<String, dynamic> json) =>
       _$IngredientFromJson(json);
 

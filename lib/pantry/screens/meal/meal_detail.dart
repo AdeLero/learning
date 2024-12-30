@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,8 +29,8 @@ class MealDetail extends StatelessWidget {
           pinned: true,
           backgroundColor: pantryTheme.primaryColor,
           flexibleSpace: FlexibleSpaceBar(
-            background: Image.asset(
-              meal.image!,
+            background: Image.file(
+              File(meal.image!),
               fit: BoxFit.cover,
             ),
           ),
@@ -71,12 +73,15 @@ class MealDetail extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          meal.name,
-                          style: TextStyle(
-                            fontSize: 40.sp,
-                            fontWeight: FontWeight.w900,
-                            color: pantryTheme.primaryColor,
+                        SizedBox(
+                          width: 205.w,
+                          child: Text(
+                            meal.name,
+                            style: TextStyle(
+                              fontSize: 40.sp,
+                              fontWeight: FontWeight.w900,
+                              color: pantryTheme.primaryColor,
+                            ),
                           ),
                         ),
                         Row(

@@ -21,6 +21,22 @@ class Meal {
     this.timeToCook,
   });
 
+  Meal copyWith ({
+    String? name,
+    List<MealIngredient>? mealIngredients,
+    String? image,
+    String? howToCook,
+    String? timeToCook,
+}) {
+    return Meal(
+      name: name ?? this.name,
+      mealIngredients: mealIngredients ?? this.mealIngredients,
+      image: image ?? this.image,
+      howToCook: howToCook ?? this.howToCook,
+      timeToCook: timeToCook ?? this.timeToCook,
+    );
+  }
+
   factory Meal.fromJson(Map<String, dynamic> json) => _$MealFromJson(json);
   Map<String, dynamic> toJson() => _$MealToJson(this);
 }

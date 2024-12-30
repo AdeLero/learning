@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:my_learning/customizations/colors.dart';
 import 'package:my_learning/pantry/customization/theme_data.dart';
 import 'package:my_learning/pantry/screens/ingredient/add_ingredient.dart';
-import 'package:my_learning/pantry/screens/inventory_screen.dart';
+import 'package:my_learning/pantry/screens/ingredient/inventory_screen.dart';
 import 'package:my_learning/pantry/screens/meal/meal_inventory_screen.dart';
 
 class ListsPage extends StatelessWidget {
@@ -37,7 +37,7 @@ class ListsPage extends StatelessWidget {
                 ),
                 SizedBox(
                   width: size.width,
-                  height: size.height * 0.80,
+                  height: size.height * 0.75,
                   child: const TabBarView(
                     children: [
                       InventoryScreen(),

@@ -12,6 +12,17 @@ class Inventory {
     required this.quantity,
   });
 
-  factory Inventory.fromJson(Map<String, dynamic> json) => _$InventoryFromJson(json);
+  Inventory copyWith({
+    String? ingredientName,
+    double? quantity,
+  }) {
+    return Inventory(
+      ingredientName: ingredientName ?? this.ingredientName,
+      quantity: quantity ?? this.quantity,
+    );
+  }
+
+  factory Inventory.fromJson(Map<String, dynamic> json) =>
+      _$InventoryFromJson(json);
   Map<String, dynamic> toJson() => _$InventoryToJson(this);
 }

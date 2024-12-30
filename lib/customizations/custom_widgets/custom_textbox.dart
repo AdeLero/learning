@@ -21,6 +21,7 @@ class CustomTextbox extends StatelessWidget {
   final FloatingLabelBehavior? floatingLabelBehavior;
   final bool hasPrefixIcon;
   final bool obscureInput;
+  final bool isReadOnly;
   const CustomTextbox({
     this.hasOutline = true,
     this.expands = false,
@@ -41,6 +42,7 @@ class CustomTextbox extends StatelessWidget {
     this.floatingLabelBehavior,
     this.hasPrefixIcon = false,
     this.obscureInput = false,
+    this.isReadOnly = false,
   });
 
   @override
@@ -49,6 +51,7 @@ class CustomTextbox extends StatelessWidget {
       expands: expands,
       maxLength: maxLength,
       controller: controller,
+      readOnly: isReadOnly,
       obscureText: obscureInput,
       decoration: InputDecoration(
         labelText: label,

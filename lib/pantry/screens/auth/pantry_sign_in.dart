@@ -21,6 +21,7 @@ class PantrySignIn extends StatelessWidget {
     final authBloc = BlocProvider.of<AuthBloc>(context);
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
+    TextEditingController emailC = TextEditingController();
     return Scaffold(
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -108,7 +109,22 @@ class PantrySignIn extends StatelessWidget {
                                 showDialog(
                                     context: context,
                                     builder: (context) {
-                                      return const MyAlertDialog();
+                                      return MyAlertDialog(
+                                        title: "Forgot Password?",
+                                        buttonText: "Reset",
+                                        content: CustomTextbox(
+                                          label: "Email",
+                                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                                          hintText: "Enter your Email here to reset your password",
+                                          controller: emailC,
+                                          borderRadius: 8.r,
+                                          fillColor: Colors.transparent,
+                                        ),
+                                        onSubmit: () async {
+                                          final email = emailC.text;
+                                          authBloc.add(ForgotPassword(email: email));
+                                        }
+                                      );
                                     });
                               },
                               child: Text(
