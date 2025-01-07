@@ -25,7 +25,6 @@ class ScheduleMeal extends StatelessWidget {
     final mealState = mealBloc.state;
     final inventory = (mealState as MealsLoaded).meals;
     return BlocListener<ScheduleBloc, ScheduleState>(
-      listenWhen: (previous, current) => current is ScheduleBeingFilled,
       listener: (context, state) {
         if (state is ScheduledMealComplete) {
           Navigator.pop(context);
@@ -39,7 +38,7 @@ class ScheduleMeal extends StatelessWidget {
               leading: IconButton(
                 onPressed: () {
                   scheduleBloc.add(NavigateScheduleBack());
-                  Navigator.pop(context);
+                  Navigator.canPop(context);
                 },
                 icon: Icon(
                   Icons.arrow_back,
@@ -339,7 +338,7 @@ class ScheduleMeal extends StatelessWidget {
                     scheduleBloc.add(AddScheduledMeal(
                       mealTime: t.mealTime!,
                       meal: t.meal!,
-                      date: t.date!,
+                      date: t.date ?? DateTime.now(),
                       servings: t.servings,
                     ));
                   },

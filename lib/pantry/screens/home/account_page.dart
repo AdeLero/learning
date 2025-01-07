@@ -2,10 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:my_learning/customizations/colors.dart';
 import 'package:my_learning/customizations/custom_widgets/custom_Button.dart';
 import 'package:my_learning/customizations/custom_widgets/margins.dart';
 import 'package:my_learning/pantry/blocs/auth_bloc/auth_bloc.dart';
+import 'package:my_learning/pantry/blocs/meal_time_bloc/meal_time_bloc.dart';
 import 'package:my_learning/pantry/customization/theme_data.dart';
+import 'package:my_learning/pantry/routes/routes.dart';
 import 'package:my_learning/pantry/screens/account/edit_account_details.dart';
 import 'package:my_learning/pantry/screens/auth/pantry_sign_in.dart';
 
@@ -20,6 +23,7 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     final authBloc = BlocProvider.of<AuthBloc>(context);
+    final mealTimeBloc = context.read<MealTimeBloc>();
     return Scaffold(
       body: SafeArea(
         child: BlocListener<AuthBloc, AuthState>(
@@ -78,12 +82,52 @@ class _AccountPageState extends State<AccountPage> {
                         buttonText: "Sign Out",
                         buttonColor: pantryTheme.primaryColor,
                       ),
+                      YMargin(48.h),
+                      Container(
+                        width: double.maxFinite,
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, Routes.mealTimeSettings);
+                                mealTimeBloc.add(OpenSettings());
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: TheColors.lightGrey,
+                                    ),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.timer_outlined,
+                                      size: 24.sp,
+                                    ),
+                                    XMargin(24.w),
+                                    Text(
+                                      "Meal Time Settings",
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                   // TODO Create a page for checking the history
                 );
               }
-              return Container();
+              return SizedBox();
             },
           ),
         ),

@@ -42,7 +42,6 @@ class _EditScheduledMealState extends State<EditScheduledMeal> {
     final mealState = mealBloc.state;
     final inventory = (mealState as MealsLoaded).meals;
     return BlocListener<ScheduleBloc, ScheduleState>(
-      listenWhen: (previous, current) => current is ScheduleBeingFilled,
       listener: (context, state) {
         if (state is ScheduledMealComplete) {
           Navigator.pop(context);
@@ -56,7 +55,7 @@ class _EditScheduledMealState extends State<EditScheduledMeal> {
               leading: IconButton(
                 onPressed: () {
                   scheduleBloc.add(NavigateScheduleBack());
-                  Navigator.pop(context);
+                  Navigator.canPop(context);
                 },
                 icon: Icon(
                   Icons.arrow_back,

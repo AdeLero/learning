@@ -10,19 +10,20 @@ class Ingredient {
   final String unitOfMeasurement;
   final double? criticalQty;
 
-  Ingredient(
-      {this.id,
-      required this.name,
-      required this.quantity,
-      required this.unitOfMeasurement,
-      this.criticalQty});
+  Ingredient({
+    this.id,
+    required this.name,
+    required this.quantity,
+    required this.unitOfMeasurement,
+    this.criticalQty,
+  });
 
   Ingredient copyWith({
     String? name,
     double? quantity,
     String? unitOfMeasurement,
     double? criticalQty,
-}) {
+  }) {
     return Ingredient(
       name: name ?? this.name,
       quantity: quantity ?? this.quantity,
@@ -35,4 +36,6 @@ class Ingredient {
       _$IngredientFromJson(json);
 
   Map<String, dynamic> toJson() => _$IngredientToJson(this);
+
+  bool get isCritical => criticalQty != null && quantity <= criticalQty!;
 }

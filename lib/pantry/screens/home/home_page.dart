@@ -10,7 +10,7 @@ import 'package:my_learning/pantry/custom_widgets/date/date_selector.dart';
 import 'package:my_learning/pantry/custom_widgets/date/shopping_trip_countdown.dart';
 import 'package:my_learning/pantry/custom_widgets/empty_display.dart';
 import 'package:my_learning/pantry/custom_widgets/inventory_display_widget.dart';
-import 'package:my_learning/pantry/custom_widgets/mealtime_countdown_timer.dart';
+import 'package:my_learning/pantry/custom_widgets/meal_time_timer.dart';
 import 'package:my_learning/pantry/custom_widgets/planned_meal_display.dart';
 import 'package:my_learning/pantry/customization/theme_data.dart';
 import 'package:my_learning/pantry/models/meal_time_enum.dart';
@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-              const MealtimeCountdownTimer(),
+              const MealTimeTimerWidget(),
               BlocBuilder<ScheduleBloc, ScheduleState>(
                 builder: (context, state) {
                   if (state is ScheduledMealComplete) {
