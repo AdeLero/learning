@@ -10,3 +10,11 @@ class ChatSuccessState extends ChatState{
 
   ChatSuccessState({required this.messages});
 }
+
+class ChatTypingState extends ChatState {
+  final String? text;
+  final String? filePath;
+  final List<ChatMessage>? messages;
+
+  ChatTypingState({this.text, this.filePath, this.messages});
+}

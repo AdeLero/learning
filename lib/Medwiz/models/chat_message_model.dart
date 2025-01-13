@@ -5,7 +5,9 @@ class ApiResponse {
 
   factory ApiResponse.fromJson(Map<String, dynamic> json) {
     return ApiResponse(
-      candidates: (json["candidates"] as List).map((e) => ChatCandidates.fromJson(e)).toList(),
+      candidates: (json["candidates"] as List)
+          .map((e) => ChatCandidates.fromJson(e))
+          .toList(),
     );
   }
 
@@ -19,32 +21,33 @@ class ApiResponse {
 class ChatCandidates {
   final ChatMessage chatMessage;
   final String finishReason;
-  final int index;
-  final List<SafetyRatings> safetyRatings;
+  // final int? index;
+  // final List<SafetyRatings> safetyRatings;
 
   ChatCandidates({
     required this.chatMessage,
     required this.finishReason,
-    required this.index,
-    required this.safetyRatings,
+    // required this.index,
+    // required this.safetyRatings,
   });
 
   factory ChatCandidates.fromJson(Map<String, dynamic> json) {
     return ChatCandidates(
-        chatMessage:
-            ChatMessage.fromJson(json["content"] as Map<String, dynamic>),
-        finishReason: json["finishReason"] as String,
-        index: (json["index"] as num).toInt(),
-        safetyRatings: (json["safetyRatings"] as List<dynamic>)
-            .map((e) => SafetyRatings.fromJson(e as Map<String, dynamic>))
-            .toList());
+      chatMessage:
+          ChatMessage.fromJson(json["content"] as Map<String, dynamic>),
+      finishReason: json["finishReason"] as String,
+    );
+    // index: (json["index"] as num).toInt(),
+    // safetyRatings: (json["safetyRatings"] as List<dynamic>)
+    //     .map((e) => SafetyRatings.fromJson(e as Map<String, dynamic>))
+    //     .toList());
   }
 
   Map<String, dynamic> toJson() => {
         "content": chatMessage.toJson(),
         "finishReason": finishReason,
-        "index": index,
-        "safetyRatings": safetyRatings.map((e) => e.toJson()).toList(),
+        // "index": index,
+        // "safetyRatings": safetyRatings.map((e) => e.toJson()).toList(),
       };
 
   static List<ChatCandidates> jsonToList(List list) => list
@@ -97,6 +100,8 @@ class ChatMessage {
 abstract interface class ChatPart {
   factory ChatPart.text(String text) => TextChatPart(text);
 
+  factory ChatPart.file(FilePart filePart) => FileData(filePart);
+
   factory ChatPart.fromJson(Map<String, dynamic> json) {
     return ChatPart.text(json["text"] as String);
   }
@@ -106,6 +111,8 @@ abstract interface class ChatPart {
 
   static Map<String, dynamic> toJson(ChatPart e) {
     if (e is TextChatPart) {
+      return e.toJson();
+    } else if (e is FileData) {
       return e.toJson();
     }
     throw UnsupportedError("${e.runtimeType} not supported!");
@@ -121,5 +128,40 @@ class TextChatPart implements ChatPart {
 
   Map<String, dynamic> toJson() => {
         "text": text,
+      };
+}
+
+class FileData implements ChatPart {
+  FilePart? fileData;
+
+  FileData(this.fileData);
+
+  static List<FileData> jsonToList(List list) =>
+      list.map((e) => FileData.fromJson(e as Map<String, dynamic>)).toList();
+
+  factory FileData.fromJson(Map<String, dynamic> json) => FileData(
+      json['fileData'] == null ? null : FilePart.fromJson(json['fileData']));
+
+  Map<String, dynamic> toJson() => {
+        'fileData': fileData?.toJson(),
+      };
+}
+
+class FilePart {
+  String? fileType;
+  String? fileLocation;
+  FilePart({
+    this.fileType,
+    this.fileLocation,
+  });
+
+  factory FilePart.fromJson(Map<String, dynamic> json) => FilePart(
+        fileType: json['mimeType'] as String?,
+        fileLocation: json['fileUri'] as String?,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'mimeType': fileType,
+        'fileUri': fileLocation,
       };
 }

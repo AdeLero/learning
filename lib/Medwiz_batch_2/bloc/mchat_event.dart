@@ -5,8 +5,12 @@ sealed class MchatEvent {}
 
 class SendNewMessage extends MchatEvent {
   final String messageInput;
+  final File? messageFile;
 
-  SendNewMessage({required this.messageInput});
+  SendNewMessage({
+    required this.messageInput,
+    this.messageFile,
+  });
 }
 
 class LoadMessages extends MchatEvent {}

@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:my_learning/pantry/blocs/meal_time_bloc/meal_time_bloc.dart';
 import 'package:my_learning/pantry/models/meal/meal_model.dart';
 import 'package:my_learning/pantry/models/meal_time_enum.dart';
 import 'package:my_learning/pantry/models/scheduled_meals/scheduled_meal_model.dart';
@@ -9,7 +11,9 @@ part 'schedule_event.dart';
 part 'schedule_state.dart';
 
 class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
-  ScheduleBloc() : super(ScheduleInitial()) {
+  final MealTimeBloc mealTimeBloc;
+
+  ScheduleBloc(this.mealTimeBloc) : super(ScheduleInitial()) {
     on<NavigateScheduleBack>(navigateBack);
     on<GetMealTime>(getMealTime);
     on<GetMeal>(getMeal);
@@ -95,10 +99,21 @@ class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
   }
 
   void addScheduledMeal(AddScheduledMeal event, Emitter<ScheduleState> emit) {
+
+    TimeOfDay time = mealTimeBloc.mealTimes.firstWhere((meal) => meal.mealTime == event.mealTime).time;
+
+    DateTime timeStamp = DateTime(
+      event.date.year,
+      event.date.month,
+      event.date.day,
+      time.hour,
+      time.minute,
+    );
     try{
       scheduledMeals.add(ScheduledMeal(meal: event.meal,
           mealTime: event.mealTime,
           date: event.date,
+          timeStamp: timeStamp,
           servings: event.servings,
           note: "",));
 

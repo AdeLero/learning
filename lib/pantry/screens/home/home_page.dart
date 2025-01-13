@@ -89,7 +89,8 @@ class _HomePageState extends State<HomePage> {
                     final today = normalizeDate(selectedDate);
                     final todaysSchedule = state.scheduledMeals
                         .where((meal) => normalizeDate(meal.date) == today)
-                        .toList();
+                        .toList()
+                    ..sort((a,b) => a.timeStamp.compareTo(b.timeStamp));
 
                     return todaysSchedule.isNotEmpty
                         ? ListView.builder(
@@ -101,6 +102,7 @@ class _HomePageState extends State<HomePage> {
                               return PlannedMealDisplay(
                                 mealName: meal.meal.name,
                                 mealTime: meal.mealTime.displayName,
+                                timeStamp: meal.timeStamp,
                                 mealImage: meal.meal.image!,
                                 mealServings: meal.servings.toString(),
                                 onEdit: () {

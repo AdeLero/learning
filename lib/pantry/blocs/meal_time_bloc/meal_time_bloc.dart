@@ -1,7 +1,6 @@
 import 'dart:async';
-
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:my_learning/pantry/models/meal_time/meal_time_model.dart';
 import 'package:my_learning/pantry/models/meal_time_enum.dart';
 
@@ -10,7 +9,7 @@ part 'meal_time_state.dart';
 
 
 
-class MealTimeBloc extends Bloc<MealTimeEvent, MealTimeState> {
+class MealTimeBloc extends HydratedBloc<MealTimeEvent, MealTimeState> {
   MealTimeBloc() : super(MealTimeInitial()) {
     on<UpdateMealTime>(updateMealTime);
     on<StartCountdown>(startCountdown);
@@ -144,5 +143,53 @@ class MealTimeBloc extends Bloc<MealTimeEvent, MealTimeState> {
     }
 
     _startAutoCountdown();
+  }
+
+  @override
+  MealTimeState? fromJson(Map<String, dynamic> json) {
+    try {
+      final mealTimesJson = json["mealTimes"] as List;
+      final restoredMealTimes = mealTimesJson
+      .map((mealTimeJson) => MealTimeSetting.fromJson(mealTimeJson))
+      .toList();
+
+      mealTimes = restoredMealTimes;
+
+      final now = DateTime.now();
+      final nextMealTime = mealTimes.firstWhere(
+            (mealTime) {
+          final mealDateTime = DateTime(
+            now.year,
+            now.month,
+            now.day,
+            mealTime.time.hour,
+            mealTime.time.minute,
+          );
+          return mealDateTime.isAfter(now); // Look for the next meal time
+        },
+        orElse: () {
+
+          final nextMealIndex = (mealTimes.indexOf(
+              mealTimes.firstWhere((mealTime) => mealTime.time.hour > now.hour)) +
+              1) %
+              mealTimes.length;
+          return mealTimes[nextMealIndex]; // Default to the next meal
+        },
+      );
+
+      add(StartCountdown(mealTime: nextMealTime.mealTime));
+
+      return MealTimeUpdated(mealTimes: mealTimes);
+    } catch (e) {
+      print(e.toString());
+    }
+    return MealTimeInitial();
+  }
+
+  @override
+  Map<String, dynamic> toJson(MealTimeState state) {
+    return {
+      'mealTimes': mealTimes.map((mealTime) => mealTime.toJson()).toList(),
+    };
   }
 }

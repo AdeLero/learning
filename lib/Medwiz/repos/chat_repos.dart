@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:my_learning/Medwiz/models/ApiResponse.dart';
 import 'package:my_learning/Medwiz/models/chat_message_model.dart';
@@ -26,13 +27,40 @@ class ChatRepo {
       if (response.statusCode!>=200 && response.statusCode!<300) {
         log("API Response: ${response.data}");
         ApiResponse apiResponse = ApiResponse.fromJson(response.data);
-        String generatedText = apiResponse.candidates.first.response;
+        String generatedText = (apiResponse.candidates.first.chatMessage.parts.firstOrNull as TextChatPart).text;
         return generatedText;
       }
       return '';
     } catch (e) {
       log(e.toString());
       return '';
+    }
+  }
+
+  static Future<String?> uploadFile(File file, String displayName) async {
+    try {
+      Dio dio = Dio();
+
+      const String uploadUrl = "https://generativelanguage.googleapis.com/upload/v1beta/files?key=$apiKey";
+
+      FormData formData = FormData.fromMap({
+        "file": await MultipartFile.fromFile(file.path, filename: file.path.split('/').last),
+        "displayName": displayName,
+      });
+
+      final response = await dio.post(uploadUrl, data: formData);
+
+      if (response.statusCode! >= 200 && response.statusCode! < 300) {
+        log("File uploaded successfully: ${response.data}");
+
+        return response.data["uri"] as String?;
+      } else {
+        log("File upload failed: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      log("File upload error: $e");
+      return null;
     }
   }
 }

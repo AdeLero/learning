@@ -7,6 +7,7 @@ class ScheduledMeal {
   final Meal meal;
   final MealTime mealTime;
   final DateTime date;
+  final DateTime timeStamp;
   final int servings;
   final String? note;
 
@@ -15,6 +16,7 @@ class ScheduledMeal {
     required this.meal,
     required this.mealTime,
     required this.date,
+    required this.timeStamp,
     required this.servings,
     required this.note,
   }) : id = id ?? const Uuid().v4();
@@ -24,6 +26,7 @@ class ScheduledMeal {
     Meal? meal,
     MealTime? mealTime,
     DateTime? date,
+    DateTime? timeStamp,
     int? servings,
     String? note,
 }) {
@@ -32,6 +35,7 @@ class ScheduledMeal {
       meal: meal ?? this.meal,
       mealTime: mealTime ?? this.mealTime,
       date: date ?? this.date,
+      timeStamp: timeStamp ?? this.timeStamp,
       servings: servings ?? this.servings,
       note: note ?? this.note,
     );
@@ -41,6 +45,7 @@ class ScheduledMeal {
     meal: Meal.fromJson(json['meal'] as Map<String, dynamic>),
     mealTime: MealTime.values.firstWhere((m) => m.name == json['mealTime']),
     date: DateTime.parse(json['date'] as String),
+    timeStamp: DateTime.parse(json['timeStamp'] as String),
     servings: (json['servings'] as num).toInt(),
     note: json['note'] as String?,
   );
@@ -51,6 +56,7 @@ class ScheduledMeal {
       'meal': meal.toJson(),
       'mealTime': mealTime.toString().split('.').last,
       'date': date.toIso8601String(),
+      'timeStamp': timeStamp.toIso8601String(),
       'servings': servings,
       'note': note,
     };

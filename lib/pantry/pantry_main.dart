@@ -1,5 +1,3 @@
-import 'dart:isolate';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,18 +10,10 @@ import 'package:my_learning/pantry/blocs/meal_bloc/meal_bloc.dart';
 import 'package:my_learning/pantry/blocs/meal_time_bloc/meal_time_bloc.dart';
 import 'package:my_learning/pantry/blocs/schedule_bloc/schedule_bloc.dart';
 import 'package:my_learning/pantry/customization/theme_data.dart';
-import 'package:my_learning/pantry/isolates/countdown_isolate.dart';
 import 'package:my_learning/pantry/repos/auth_repo.dart';
 import 'package:my_learning/pantry/routes/screens.dart';
 import 'package:path_provider/path_provider.dart';
-// void startCountdownProcess() async {
-//   final receivePort = ReceivePort();
-//   await Isolate.spawn(countdownIsolate, receivePort.sendPort);
-//
-//   receivePort.listen((message) {
-//     print(message);
-//   });
-// }
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -43,11 +33,13 @@ void main() async {
       BlocProvider<MealBloc>(
         create: (_) => MealBloc(),
       ),
-      BlocProvider<ScheduleBloc>(
-        create: (_) => ScheduleBloc(),
-      ),
       BlocProvider<MealTimeBloc>(
         create: (_) => MealTimeBloc(),
+      ),
+      BlocProvider<ScheduleBloc>(
+        create: (context) => ScheduleBloc(
+          context.read<MealTimeBloc>(),
+        ),
       ),
     ],
     child: const PantryApp(),
@@ -71,10 +63,13 @@ class PantryApp extends StatelessWidget {
           routes: appRoutes,
           onGenerateRoute: (settings) {
             final finalRoute = screens.firstWhere(
-                (route) => route.name == settings.name,
-              orElse: () => throw Exception("Route not found: ${settings.name}"),
+              (route) => route.name == settings.name,
+              orElse: () =>
+                  throw Exception("Route not found: ${settings.name}"),
             );
-            return MaterialPageRoute(builder: (context) => finalRoute.page!(settings.arguments),);
+            return MaterialPageRoute(
+              builder: (context) => finalRoute.page!(settings.arguments),
+            );
           },
         );
       },
