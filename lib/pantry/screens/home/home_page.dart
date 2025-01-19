@@ -84,50 +84,52 @@ class _HomePageState extends State<HomePage> {
               ),
               const MealTimeTimerWidget(),
               BlocBuilder<ScheduleBloc, ScheduleState>(
-                builder: (context, state) {
-                  if (state is ScheduledMealComplete) {
-                    final today = normalizeDate(selectedDate);
-                    final todaysSchedule = state.scheduledMeals
-                        .where((meal) => normalizeDate(meal.date) == today)
-                        .toList()
-                    ..sort((a,b) => a.timeStamp.compareTo(b.timeStamp));
+                            builder: (context, state) {
+                              if (state is ScheduledMealComplete) {
+                                final today = normalizeDate(selectedDate);
+                                final todaysSchedule = state.scheduledMeals
+                                    .where((meal) => normalizeDate(meal.date) == today)
+                                    .toList()
+                                ..sort((a,b) => a.timeStamp.compareTo(b.timeStamp));
 
-                    return todaysSchedule.isNotEmpty
-                        ? ListView.builder(
-                            itemCount: todaysSchedule.length,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              final meal = todaysSchedule[index];
-                              return PlannedMealDisplay(
-                                mealName: meal.meal.name,
-                                mealTime: meal.mealTime.displayName,
-                                timeStamp: meal.timeStamp,
-                                mealImage: meal.meal.image!,
-                                mealServings: meal.servings.toString(),
-                                onEdit: () {
-                                  Navigator.pushNamed(
-                                      context, Routes.editScheduledMeal,
-                                      arguments: meal.id);
-                                },
-                                onDelete: () {
-                                  scheduleBloc
-                                      .add(DeleteMealFromSchedule(id: meal.id));
-                                },
-                                onShare: () {},
-                                onFavorite: () {},
-                              );
+                                return todaysSchedule.isNotEmpty
+                                    ? ListView.builder(
+                                        itemCount: todaysSchedule.length,
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          final meal = todaysSchedule[index];
+                                          return PlannedMealDisplay(
+                                            id: meal.id,
+                                            mealName: meal.meal.name,
+                                            mealTime: meal.mealTime.displayName,
+                                            timeStamp: meal.timeStamp,
+                                            mealImage: meal.meal.image!,
+                                            mealPrep: meal.mealPrep,
+                                            mealServings: meal.servings.toString(),
+                                            onEdit: () {
+                                              Navigator.pushNamed(
+                                                  context, Routes.editScheduledMeal,
+                                                  arguments: meal.id);
+                                            },
+                                            onDelete: () {
+                                              scheduleBloc
+                                                  .add(DeleteMealFromSchedule(id: meal.id));
+                                            },
+                                            onShare: () {},
+                                            onFavorite: () {},
+                                          );
+                                        },
+                                      )
+                                    : const EmptyDisplay(
+                                        imagePath:
+                                            "lib/assets/images/no_scheduled_meals.png",
+                                        text: "No meals Planned for this day",
+                                      );
+                              }
+                              return const SizedBox();
                             },
-                          )
-                        : const EmptyDisplay(
-                            imagePath:
-                                "lib/assets/images/no_scheduled_meals.png",
-                            text: "No meals Planned for this day",
-                          );
-                  }
-                  return const SizedBox();
-                },
-              ),
+                          ),
               BlocBuilder<InventoryBloc, InventoryState>(
                 builder: (context, state) {
                   if (state is InventoryLoaded && state.inventory.isNotEmpty) {

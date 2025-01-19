@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:my_learning/pantry/blocs/bloc_streams/meal_time_stream.dart';
 import 'package:my_learning/pantry/models/meal_time/meal_time_model.dart';
 import 'package:my_learning/pantry/models/meal_time_enum.dart';
 
@@ -10,6 +11,8 @@ part 'meal_time_state.dart';
 
 
 class MealTimeBloc extends HydratedBloc<MealTimeEvent, MealTimeState> {
+  final MealTimeStream mealTimeStream = MealTimeStream();
+
   MealTimeBloc() : super(MealTimeInitial()) {
     on<UpdateMealTime>(updateMealTime);
     on<StartCountdown>(startCountdown);
@@ -77,21 +80,19 @@ class MealTimeBloc extends HydratedBloc<MealTimeEvent, MealTimeState> {
           return mealDateTime.isAfter(now);
         },
         orElse: () {
-          // Check if it's past dinner, then loop back to breakfast
-          final nextMealIndex = (mealTimes.indexOf(mealTimes.firstWhere((mealTime) => mealTime.time.hour > now.hour)) + 1) % mealTimes.length;
-          return mealTimes[nextMealIndex]; // Default to the next meal
+
+          return mealTimes.first;
         },
       );
 
-      add(StartCountdown(mealTime: nextMealTime.mealTime)); // Trigger countdown event
+      mealTimeStream.notify(nextMealTime);
+      add(StartCountdown(mealTime: nextMealTime.mealTime));
     }
   }
 
 
 
   void startCountdown(StartCountdown event, Emitter<MealTimeState> emit) {
-    print("Counting down");
-    // if (_timer?.isActive ?? false) return;
 
     final mealTime = mealTimes.firstWhere(
           (time) => time.mealTime == event.mealTime,
@@ -103,16 +104,15 @@ class MealTimeBloc extends HydratedBloc<MealTimeEvent, MealTimeState> {
 
     emit(CountingDown(timeRemaining: timeRemaining, mealTime: mealTime.mealTime));
 
-    _timer?.cancel(); // Cancel any existing timer.
+    _timer?.cancel();
 
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (timeRemaining.inSeconds > 0) {
         timeRemaining -= const Duration(seconds: 1);
         _timerStreamController.add(timeRemaining);
       } else {
-        _timer?.cancel(); // Stop the timer when time is up.
+        _timer?.cancel();
 
-        // Start countdown for the next meal time.
         final nextMealTime = mealTimes.firstWhere(
               (x) => x.getTimeRemaining(DateTime.now(), mealTimes).inSeconds > 0,
           orElse: () => mealTimes.first,
@@ -165,7 +165,7 @@ class MealTimeBloc extends HydratedBloc<MealTimeEvent, MealTimeState> {
             mealTime.time.hour,
             mealTime.time.minute,
           );
-          return mealDateTime.isAfter(now); // Look for the next meal time
+          return mealDateTime.isAfter(now);
         },
         orElse: () {
 
@@ -173,7 +173,7 @@ class MealTimeBloc extends HydratedBloc<MealTimeEvent, MealTimeState> {
               mealTimes.firstWhere((mealTime) => mealTime.time.hour > now.hour)) +
               1) %
               mealTimes.length;
-          return mealTimes[nextMealIndex]; // Default to the next meal
+          return mealTimes[nextMealIndex];
         },
       );
 

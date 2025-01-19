@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:my_learning/pantry/blocs/bloc_streams/ingredient_quantity_stream.dart';
 import 'package:my_learning/pantry/models/ingredient/ingredient_model.dart';
 import 'package:my_learning/pantry/models/meal/meal_ingredient.dart';
 import 'package:my_learning/pantry/models/meal/meal_model.dart';
@@ -10,11 +11,15 @@ part 'inventory_event.dart';
 part 'inventory_state.dart';
 
 class InventoryBloc extends HydratedBloc<InventoryEvent, InventoryState> {
+  final IngredientQuantityStream ingredientQuantityStream =
+      IngredientQuantityStream();
+
   InventoryBloc() : super(InventoryInitial()) {
     on<AddIngredientToInventory>(addIngredientToInventory);
     on<EditIngredientEvent>(editIngredient);
     on<NavigateBack>(navigateBack);
     on<DeleteIngredient>(deleteIngredient);
+    updateInventory();
   }
 
   List<Ingredient> inventory = [];
@@ -92,6 +97,22 @@ class InventoryBloc extends HydratedBloc<InventoryEvent, InventoryState> {
     } catch (e) {
       emit(InventoryError(message: "Failed to delete Ingredient"));
     }
+  }
+
+  void updateInventory() {
+    print("Setting up listener for updates...");
+    ingredientQuantityStream.updates.listen((p) {
+      print("Listener triggered for: ${p.name}");
+      final ingredient = inventory.firstWhere((ing) => ing.name == p.name);
+      final newQty = ingredient.quantity - p.quantity;
+      add(EditIngredientEvent(
+        name: ingredient.name,
+        unitOfMeasurement: ingredient.unitOfMeasurement,
+        quantity: newQty.toString(),
+        criticalQty: ingredient.criticalQty.toString(),
+      ));
+      print("${p.name} as in");
+    });
   }
 
   @override

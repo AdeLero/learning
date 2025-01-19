@@ -6,4 +6,5 @@ class Routes {
   static const String editScheduledMeal = "/EditScheduledMeal";
   static const String mealInventory = "/MealInventoryScreen";
   static const String mealTimeSettings = "/MealTimeSettingsScreen";
+  static const String shoppingTripSettings = "/ShoppingTripSettings";
 }

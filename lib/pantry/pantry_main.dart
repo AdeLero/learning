@@ -9,6 +9,7 @@ import 'package:my_learning/pantry/blocs/ingredient_bloc/inventory_bloc.dart';
 import 'package:my_learning/pantry/blocs/meal_bloc/meal_bloc.dart';
 import 'package:my_learning/pantry/blocs/meal_time_bloc/meal_time_bloc.dart';
 import 'package:my_learning/pantry/blocs/schedule_bloc/schedule_bloc.dart';
+import 'package:my_learning/pantry/blocs/trip_bloc/trip_bloc.dart';
 import 'package:my_learning/pantry/customization/theme_data.dart';
 import 'package:my_learning/pantry/repos/auth_repo.dart';
 import 'package:my_learning/pantry/routes/screens.dart';
@@ -40,6 +41,9 @@ void main() async {
         create: (context) => ScheduleBloc(
           context.read<MealTimeBloc>(),
         ),
+      ),
+      BlocProvider<TripBloc>(
+        create: (_) => TripBloc(),
       ),
     ],
     child: const PantryApp(),

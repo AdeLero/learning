@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_learning/customizations/colors.dart';
 import 'package:my_learning/customizations/custom_widgets/custom_Button.dart';
 import 'package:my_learning/customizations/custom_widgets/margins.dart';
@@ -114,17 +115,54 @@ class _AccountPageState extends State<AccountPage> {
                                       style: TextStyle(
                                         fontSize: 15.sp,
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
-                      )
+                      ),
+                      Container(
+                        width: double.maxFinite,
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, Routes.shoppingTripSettings);
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: TheColors.lightGrey,
+                                    ),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    FaIcon(
+                                      FontAwesomeIcons.bagShopping,
+                                      size: 24.sp,
+                                    ),
+                                    XMargin(24.w),
+                                    Text(
+                                      "Shopping Trip Settings",
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                  // TODO Create a page for checking the history
                 );
               }
               return SizedBox();

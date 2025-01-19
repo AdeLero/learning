@@ -19,6 +19,12 @@ class GetMeal extends ScheduleEvent {
   GetMeal({required this.meal});
 }
 
+class UpdateSchedule extends ScheduleEvent {
+  final List<ScheduledMeal> scheduledMeals;
+
+  UpdateSchedule({required this.scheduledMeals});
+}
+
 class DeletePendingMeal extends ScheduleEvent {}
 
 class GetDate extends ScheduleEvent {
@@ -53,6 +59,7 @@ class EditAScheduledMeal extends ScheduleEvent {
   final Meal meal;
   final DateTime date;
   final int servings;
+  final MealPrep? mealPrep;
 
   EditAScheduledMeal({
     required this.id,
@@ -60,7 +67,26 @@ class EditAScheduledMeal extends ScheduleEvent {
     required this.meal,
     required this.date,
     required this.servings,
+    this.mealPrep,
   });
+}
+
+class CookedMeal extends ScheduleEvent {
+  final String id;
+
+  CookedMeal({required this.id});
+}
+
+class OrderedMeal extends ScheduleEvent {
+  final String id;
+
+  OrderedMeal({required this.id});
+}
+
+class ClearMealPrep extends ScheduleEvent {
+  final String id;
+
+  ClearMealPrep({required this.id});
 }
 
 class DeleteMealFromSchedule extends ScheduleEvent {

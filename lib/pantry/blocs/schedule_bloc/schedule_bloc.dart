@@ -1,17 +1,28 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:my_learning/pantry/blocs/bloc_streams/bloc_event_stream.dart';
+import 'package:my_learning/pantry/blocs/bloc_streams/ingredient_quantity_stream.dart';
+import 'package:my_learning/pantry/blocs/bloc_streams/meal_time_stream.dart';
 import 'package:my_learning/pantry/blocs/meal_time_bloc/meal_time_bloc.dart';
+import 'package:my_learning/pantry/models/ingredient/ingredient_model.dart';
 import 'package:my_learning/pantry/models/meal/meal_model.dart';
 import 'package:my_learning/pantry/models/meal_time_enum.dart';
+import 'package:my_learning/pantry/models/scheduled_meals/meal_prep_enum.dart';
 import 'package:my_learning/pantry/models/scheduled_meals/scheduled_meal_model.dart';
+import 'package:my_learning/pantry/models/shopping_trips/shopping_frequency_model.dart';
 
 part 'schedule_event.dart';
 part 'schedule_state.dart';
 
 class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
   final MealTimeBloc mealTimeBloc;
+  final MealTimeStream mealTimeStream = MealTimeStream();
+  final BlocEventStream blocEventStream = BlocEventStream();
+  final IngredientQuantityStream ingredientQuantityStream =
+      IngredientQuantityStream();
 
   ScheduleBloc(this.mealTimeBloc) : super(ScheduleInitial()) {
     on<NavigateScheduleBack>(navigateBack);
@@ -23,6 +34,17 @@ class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
     on<AddScheduledMeal>(addScheduledMeal);
     on<EditAScheduledMeal>(editAScheduledMeal);
     on<DeleteMealFromSchedule>(deleteMealFromSchedule);
+    on<UpdateSchedule>(updateSchedule);
+    on<OrderedMeal>(orderedMeal);
+    on<CookedMeal>(cookedMeal);
+    on<ClearMealPrep>(clearMealPrep);
+    updateUI();
+
+    blocEventStream.blocStream.listen((event) {
+      if (event == "GenerateShoppingList") {
+        getScheduledMeals();
+      }
+    });
   }
 
   MealTime? draftMealTime = MealTime.breakfast;
@@ -99,8 +121,9 @@ class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
   }
 
   void addScheduledMeal(AddScheduledMeal event, Emitter<ScheduleState> emit) {
-
-    TimeOfDay time = mealTimeBloc.mealTimes.firstWhere((meal) => meal.mealTime == event.mealTime).time;
+    TimeOfDay time = mealTimeBloc.mealTimes
+        .firstWhere((meal) => meal.mealTime == event.mealTime)
+        .time;
 
     DateTime timeStamp = DateTime(
       event.date.year,
@@ -109,13 +132,15 @@ class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
       time.hour,
       time.minute,
     );
-    try{
-      scheduledMeals.add(ScheduledMeal(meal: event.meal,
-          mealTime: event.mealTime,
-          date: event.date,
-          timeStamp: timeStamp,
-          servings: event.servings,
-          note: "",));
+    try {
+      scheduledMeals.add(ScheduledMeal(
+        meal: event.meal,
+        mealTime: event.mealTime,
+        date: event.date,
+        timeStamp: timeStamp,
+        servings: event.servings,
+        note: "",
+      ));
 
       draftMealTime = null;
       draftMeal = null;
@@ -127,11 +152,12 @@ class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
     }
   }
 
-  void editAScheduledMeal(EditAScheduledMeal event, Emitter<ScheduleState> emit) {
-    try{
+  void editAScheduledMeal(
+      EditAScheduledMeal event, Emitter<ScheduleState> emit) {
+    try {
       final index = scheduledMeals.indexWhere((meal) => meal.id == event.id);
 
-      if (index == -1){
+      if (index == -1) {
         emit(ScheduleError(message: "Can't find Meal"));
       }
 
@@ -140,6 +166,7 @@ class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
         meal: event.meal,
         date: event.date,
         servings: event.servings,
+        mealPrep: event.mealPrep,
       );
       emit(ScheduledMealComplete(scheduledMeals: scheduledMeals));
     } catch (e) {
@@ -147,7 +174,8 @@ class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
     }
   }
 
-  void deleteMealFromSchedule(DeleteMealFromSchedule event, Emitter<ScheduleState> emit) {
+  void deleteMealFromSchedule(
+      DeleteMealFromSchedule event, Emitter<ScheduleState> emit) {
     try {
       final index = scheduledMeals.indexWhere((meal) => meal.id == event.id);
 
@@ -166,12 +194,103 @@ class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
     }
   }
 
+  void updateUI() {
+    mealTimeStream.updates.listen((mealTime) {
+      final currentState = state;
+
+      if (currentState is ScheduledMealComplete) {
+        add(UpdateSchedule(scheduledMeals: scheduledMeals));
+      }
+    });
+  }
+
+  void updateSchedule(UpdateSchedule event, Emitter<ScheduleState> emit) {
+    emit(ScheduledMealComplete(scheduledMeals: event.scheduledMeals));
+  }
+
+  void orderedMeal(OrderedMeal event, Emitter<ScheduleState> emit) {
+    final currentState = state;
+
+    final meal = scheduledMeals.firstWhere((meal) => meal.id == event.id);
+
+    if (currentState is ScheduledMealComplete) {
+      add(EditAScheduledMeal(
+        id: meal.id,
+        mealTime: meal.mealTime,
+        meal: meal.meal,
+        date: meal.date,
+        servings: meal.servings,
+        mealPrep: MealPrep.ordered,
+      ));
+    }
+  }
+
+  void cookedMeal(CookedMeal event, Emitter<ScheduleState> emit) {
+    final currentState = state;
+
+    final meal = scheduledMeals.firstWhere((meal) => meal.id == event.id);
+
+    if (currentState is ScheduledMealComplete) {
+      add(EditAScheduledMeal(
+        id: meal.id,
+        mealTime: meal.mealTime,
+        meal: meal.meal,
+        date: meal.date,
+        servings: meal.servings,
+        mealPrep: MealPrep.cooked,
+      ));
+    }
+
+    for (final mealIngredient in meal.meal.mealIngredients) {
+      final ingredientQuantity = mealIngredient.quantity * meal.servings;
+      final updatingIngredient = Ingredient(
+        name: mealIngredient.ingredient.name,
+        quantity: ingredientQuantity,
+        unitOfMeasurement: mealIngredient.ingredient.unitOfMeasurement,
+      );
+      ingredientQuantityStream.notify(updatingIngredient);
+    }
+  }
+
+  void clearMealPrep(ClearMealPrep event, Emitter<ScheduleState> emit) {
+    final currentState = state;
+
+    final meal = scheduledMeals.firstWhere((meal) => meal.id == event.id);
+
+    if (currentState is ScheduledMealComplete) {
+      add(EditAScheduledMeal(
+        id: meal.id,
+        mealTime: meal.mealTime,
+        meal: meal.meal,
+        date: meal.date,
+        servings: meal.servings,
+        mealPrep: null,
+      ));
+    }
+  }
+
+
+  void getScheduledMeals() {
+    print("starteed");
+    final today = DateTime.now();
+
+    blocEventStream.frequencyStream.listen((frequency) {
+      final interval = today.add(frequency.interval);
+      final scheduledMealsList = scheduledMeals.where((meal) =>
+      meal.date.isAfter(today) && meal.date.isBefore(interval)).toList();
+      blocEventStream.send(scheduledMealsList);
+      print(scheduledMealsList);
+    });
+  }
+
+
   @override
   ScheduleState? fromJson(Map<String, dynamic> json) {
     try {
       if (json["scheduledMeals"] != null) {
         final scheduledMeals = (json["scheduledMeals"] as List)
-            .map((scheduledMeal) => ScheduledMeal.fromJson(scheduledMeal as Map<String, dynamic>))
+            .map((scheduledMeal) =>
+                ScheduledMeal.fromJson(scheduledMeal as Map<String, dynamic>))
             .toList();
 
         return ScheduledMealComplete(scheduledMeals: scheduledMeals);
@@ -190,9 +309,9 @@ class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
   @override
   Map<String, dynamic> toJson(ScheduleState state) {
     if (state is ScheduledMealComplete) {
-      final scheduleJson = state.scheduledMeals.map(
-          (scheduledMeal) => scheduledMeal.toJson()
-      ).toList();
+      final scheduleJson = state.scheduledMeals
+          .map((scheduledMeal) => scheduledMeal.toJson())
+          .toList();
 
       return {"scheduledMeals": scheduleJson};
     } else if (state is ScheduleBeingFilled) {

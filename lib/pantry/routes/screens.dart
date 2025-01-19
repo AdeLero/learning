@@ -4,6 +4,7 @@ import 'package:my_learning/pantry/models/ingredient/ingredient_model.dart';
 import 'package:my_learning/pantry/models/meal/meal_model.dart';
 import 'package:my_learning/pantry/routes/routes.dart';
 import 'package:my_learning/pantry/screens/account/meal_time_settings_screen.dart';
+import 'package:my_learning/pantry/screens/account/shopping_trip_settings.dart';
 import 'package:my_learning/pantry/screens/ingredient/edit_ingredient.dart';
 import 'package:my_learning/pantry/screens/meal/edit_meal.dart';
 import 'package:my_learning/pantry/screens/auth/pantry_splash_screen.dart';
@@ -41,7 +42,12 @@ final screens = [
   AppRoutes(
     name: Routes.mealTimeSettings,
     page: (_) => const MealTimeSettingsScreen(),
-  )
+  ),
+
+  AppRoutes(
+    name: Routes.shoppingTripSettings,
+    page: (_) => const ShoppingTripSettings(),
+  ),
 ];
 
 Map<String, Widget Function(BuildContext)> appRoutes = {
