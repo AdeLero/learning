@@ -7,4 +7,7 @@ class Routes {
   static const String mealInventory = "/MealInventoryScreen";
   static const String mealTimeSettings = "/MealTimeSettingsScreen";
   static const String shoppingTripSettings = "/ShoppingTripSettings";
+  static const String shoppingListsPage = "/GeneratedShoppingLists";
+  static const String loadingScreen = "/LoadingScreen";
+  static const String confirmationScreen = "/ConfirmationScreen";
 }

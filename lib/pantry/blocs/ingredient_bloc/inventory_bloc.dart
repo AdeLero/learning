@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:my_learning/pantry/blocs/bloc_streams/bloc_event_stream.dart';
 import 'package:my_learning/pantry/blocs/bloc_streams/ingredient_quantity_stream.dart';
 import 'package:my_learning/pantry/models/ingredient/ingredient_model.dart';
 import 'package:my_learning/pantry/models/meal/meal_ingredient.dart';
@@ -13,6 +14,7 @@ part 'inventory_state.dart';
 class InventoryBloc extends HydratedBloc<InventoryEvent, InventoryState> {
   final IngredientQuantityStream ingredientQuantityStream =
       IngredientQuantityStream();
+  final BlocEventStream blocEventStream = BlocEventStream();
 
   InventoryBloc() : super(InventoryInitial()) {
     on<AddIngredientToInventory>(addIngredientToInventory);
@@ -20,6 +22,14 @@ class InventoryBloc extends HydratedBloc<InventoryEvent, InventoryState> {
     on<NavigateBack>(navigateBack);
     on<DeleteIngredient>(deleteIngredient);
     updateInventory();
+
+    blocEventStream.blocStream.listen((event) {
+      if (event == 'GetInventory') {
+        print("Received Inventory Notification");
+        sendInventory();
+      }
+    });
+
   }
 
   List<Ingredient> inventory = [];
@@ -100,9 +110,7 @@ class InventoryBloc extends HydratedBloc<InventoryEvent, InventoryState> {
   }
 
   void updateInventory() {
-    print("Setting up listener for updates...");
     ingredientQuantityStream.updates.listen((p) {
-      print("Listener triggered for: ${p.name}");
       final ingredient = inventory.firstWhere((ing) => ing.name == p.name);
       final newQty = ingredient.quantity - p.quantity;
       add(EditIngredientEvent(
@@ -111,8 +119,13 @@ class InventoryBloc extends HydratedBloc<InventoryEvent, InventoryState> {
         quantity: newQty.toString(),
         criticalQty: ingredient.criticalQty.toString(),
       ));
-      print("${p.name} as in");
     });
+  }
+
+  void sendInventory() {
+    List<Ingredient> inv = (state is InventoryLoaded) ? (state as InventoryLoaded).inventory : inventory;
+    print("sending Inventory");
+    blocEventStream.inventory(inv);
   }
 
   @override

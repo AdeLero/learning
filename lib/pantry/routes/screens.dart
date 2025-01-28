@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:my_learning/customizations/appRoutes/app_routes.dart';
 import 'package:my_learning/pantry/models/ingredient/ingredient_model.dart';
 import 'package:my_learning/pantry/models/meal/meal_model.dart';
+import 'package:my_learning/pantry/models/shopping_trips/shopping_trip_model.dart';
 import 'package:my_learning/pantry/routes/routes.dart';
 import 'package:my_learning/pantry/screens/account/meal_time_settings_screen.dart';
 import 'package:my_learning/pantry/screens/account/shopping_trip_settings.dart';
 import 'package:my_learning/pantry/screens/ingredient/edit_ingredient.dart';
+import 'package:my_learning/pantry/screens/loading_screen.dart';
 import 'package:my_learning/pantry/screens/meal/edit_meal.dart';
 import 'package:my_learning/pantry/screens/auth/pantry_splash_screen.dart';
 import 'package:my_learning/pantry/screens/meal/meal_inventory_screen.dart';
 import 'package:my_learning/pantry/screens/scheduled_meals/edit_scheduled_meal.dart';
 import 'package:my_learning/pantry/screens/scheduled_meals/schedule_meal.dart';
+import 'package:my_learning/pantry/screens/shopping_list/confirmation_screen.dart';
+import 'package:my_learning/pantry/screens/shopping_list/generated_shopping_list.dart';
 
 final screens = [
   AppRoutes(
@@ -48,6 +52,21 @@ final screens = [
     name: Routes.shoppingTripSettings,
     page: (_) => const ShoppingTripSettings(),
   ),
+
+  AppRoutes(
+    name: Routes.shoppingListsPage,
+    page: (arguments) => GeneratedShoppingList(shoppingTrip: arguments as ShoppingTrip,),
+  ),
+
+  AppRoutes(
+    name: Routes.loadingScreen,
+    page: (_) => const LoadingScreen(),
+  ),
+
+  AppRoutes(
+    name: Routes.confirmationScreen,
+    page: (arguments) => ConfirmationScreen(shoppingList: arguments as ShoppingTrip),
+  )
 ];
 
 Map<String, Widget Function(BuildContext)> appRoutes = {

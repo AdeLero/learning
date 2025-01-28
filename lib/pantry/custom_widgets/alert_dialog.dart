@@ -50,8 +50,6 @@ class MyAlertDialog extends StatelessWidget {
               CustomButton(
                 onTap: () {
                   onSubmit();
-
-                  Navigator.pop(context);
                 },
                 buttonText: buttonText,
                 buttonColor: pantryTheme.primaryColor,

@@ -15,8 +15,22 @@ class ChangeTripFrequency extends TripEvent {
   ChangeTripFrequency({required this.frequency});
 }
 
-class GenerateShoppingList extends TripEvent {}
+class GenerateShoppingList extends TripEvent {
+  final DateTime date;
 
-class SaveShoppingList extends TripEvent {}
+  GenerateShoppingList({required this.date});
+}
+
+class GetTripDate extends TripEvent {
+  final DateTime tripDate;
+
+  GetTripDate({required this.tripDate});
+}
+
+class SaveShoppingList extends TripEvent {
+  final ShoppingTrip shoppingTrip;
+
+  SaveShoppingList({required this.shoppingTrip});
+}
 
 

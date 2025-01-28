@@ -1,5 +1,3 @@
-import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:meta/meta.dart';
@@ -276,7 +274,8 @@ class ScheduleBloc extends HydratedBloc<ScheduleEvent, ScheduleState> {
 
     blocEventStream.frequencyStream.listen((frequency) {
       final interval = today.add(frequency.interval);
-      final scheduledMealsList = scheduledMeals.where((meal) =>
+      List<ScheduledMeal> sMeal = (state is ScheduledMealComplete) ? (state as ScheduledMealComplete).scheduledMeals : scheduledMeals;
+      final scheduledMealsList = sMeal.where((meal) =>
       meal.date.isAfter(today) && meal.date.isBefore(interval)).toList();
       blocEventStream.send(scheduledMealsList);
       print(scheduledMealsList);

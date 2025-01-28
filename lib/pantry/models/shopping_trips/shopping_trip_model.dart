@@ -1,7 +1,7 @@
-import 'package:my_learning/pantry/models/ingredient/ingredient_model.dart';
+import 'package:my_learning/pantry/models/shopping_trips/trip_ingredient_model.dart';
 
 class ShoppingTrip {
-  final List<Ingredient> shoppingList;
+  final List<TripIngredient> shoppingList;
   final DateTime date;
 
   ShoppingTrip({
@@ -10,7 +10,7 @@ class ShoppingTrip {
   });
 
   ShoppingTrip copyWith({
-    List<Ingredient>? shoppingList,
+    List<TripIngredient>? shoppingList,
     DateTime? date,
 
 }) {
@@ -23,7 +23,7 @@ class ShoppingTrip {
   factory ShoppingTrip.fromJson(Map<String, dynamic> json) {
     return ShoppingTrip(
       shoppingList: (json['shoppingList'] as List<dynamic>)
-          .map((e) => Ingredient.fromJson(e as Map<String, dynamic>))
+          .map((e) => TripIngredient.fromJson(e as Map<String, dynamic>))
           .toList(),
       date: DateTime.parse(json['date'] as String),
     );

@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:isolate';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +19,34 @@ import 'package:my_learning/pantry/routes/screens.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
+  entry(SendPort mainSendPort){
+    final personalRcp = ReceivePort();
+    mainSendPort.send(personalRcp.sendPort);
+    personalRcp.listen((message){
+      if(message is! int){
+        return;
+      }
+      for(int i=0;i<message;i++){
+        mainSendPort.send(i*2);
+      }
+    });
+
+
+  }
+  ReceivePort receivePort = ReceivePort();
+  final isolate = await Isolate.spawn(entry, receivePort.sendPort,
+  errorsAreFatal: true,
+  debugName: 'MyIsolate');
+  final completer  = Completer<SendPort>();
+  receivePort.listen((message){
+    if(message is SendPort){
+      completer.complete(message);
+    }
+  });
+
+  final personalSendPort  = await completer.future;
+  personalSendPort.send(9);
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);

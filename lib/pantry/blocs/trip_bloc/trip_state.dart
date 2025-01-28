@@ -5,6 +5,8 @@ sealed class TripState {}
 
 final class TripInitial extends TripState {}
 
+final class TripLoading extends TripState {}
+
 class TempIntervalSelected extends TripState {
   final ShoppingFrequency frequency;
 
@@ -15,6 +17,12 @@ class TripIntervalUpdated extends TripState {
   final ShoppingFrequency frequency;
 
   TripIntervalUpdated({required this.frequency});
+}
+
+class TripListDetailing extends TripState {
+  final DateTime tripDate;
+
+  TripListDetailing({required this.tripDate});
 }
 
 class TripListGenerated extends TripState {
